@@ -8,7 +8,9 @@ process.stdin.setRawMode(true);
 const screen = require('./screen');
 const simulador = require('./simulador');
 const cadastro = require('./cadastro');
+const gerenciador = require('./gerenciador');
 // inicializando emiter
+gerenciador.set_emitter(eventEmitter);
 simulador.set_emitter(eventEmitter);
 cadastro.set_emitter(eventEmitter);
 // variáveis de controle
@@ -20,35 +22,35 @@ var main = (ch) =>
     switch (ch.toLowerCase())
     {
         case 'c':
+            is_inside_menu = true;
+            submenu_atual = ch.toLowerCase();
             screen.clear_menu().then(() =>
             {
-                is_inside_menu = true;
-                submenu_atual = ch.toLowerCase();
                 cadastro.init_screen();
             });
             break;
         case 'l':
+            is_inside_menu = true;
+            submenu_atual = ch.toLowerCase();
             screen.clear_menu().then(() =>
             {
-                is_inside_menu = true;
-                submenu_atual = ch.toLowerCase();
                 cadastro.lista_processos();
             });
             break;
         case 'e':
+            is_inside_menu = true;
+            submenu_atual = ch.toLowerCase();
             screen.clear_menu().then(() =>
             {
-                is_inside_menu = true;
-                submenu_atual = ch.toLowerCase();
                 simulador.exccessao();
             });
             break;
         case 'g':
+            is_inside_menu = true;
+            submenu_atual = ch.toLowerCase();
             screen.clear_menu().then(() =>
             {
-                is_inside_menu = true;
-                submenu_atual = ch.toLowerCase();
-                // simulador.exccessao();
+                gerenciador.show_screen();
             });
             break;
         default:
@@ -78,7 +80,7 @@ process.stdin.on('keypress', function (ch, key)
                 simulador.interrupt(ch);
                 break;
             case 'g':
-                // simulador.interrupt(ch);
+                gerenciador.listen(ch, key);
                 break;
             default:
                 break;
