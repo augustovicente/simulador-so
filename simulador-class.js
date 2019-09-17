@@ -6,7 +6,7 @@ class Simulador
         this.cadastro = require('./cadastro');
         this.id = 0;
         this.finish_count = 0;
-        this.cont = 9;
+        this.cont = 4;
         this.limit = 5;
         this.eventEmitter = emit;
         this.id = _id;
@@ -27,7 +27,7 @@ class Simulador
             this.finish_count = -1;
             this.limit = 5;
         }
-        if(!interrupt) this.cont = 9;
+        if(!interrupt) this.cont = 4;
         this.check_exit();
     }
     // função de interrupção
@@ -79,7 +79,7 @@ class Simulador
                         {
                             try
                             {
-                                this.eventEmitter.emit('simula', {id: this.id, cont: 10});
+                                this.eventEmitter.emit('simula', {id: this.id, cont: 5});
                                 throw ("Excessão!");
                             }
                             catch (e)

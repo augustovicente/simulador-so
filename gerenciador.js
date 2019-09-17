@@ -1,27 +1,68 @@
-var Simulador = require('./simulador-class');
-var eventEmitter = {on: ()=>{}};
+let Simulador = require('./simulador-class');
+let eventEmitter = {on: ()=>{}};
 const cadastro = require('./cadastro');
-var simulador = [], procs = [], cmd = "", warning = "";
-var load_process = ()=>
+var simulador = [], procs = [], cmd = "", warning = "", backup_simulador = [], fila_inicio = [], fila_pronto = [], is_ready_to_exec = false, proc_atual = [];
+let do_backup = ()=>
+{
+    backup_simulador = simulador;
+};
+let trocar_estados = ()=>
+{
+    // caso já tenha algum processo pronto
+    if(!!is_ready_to_exec)
+    {
+        // recebendo primeiro da fila e removendo da primeira posição
+        proc_atual = fila_pronto.splice(0,1);
+        procs[proc_atual.id].estado = "EXECUÇÃO  ";
+        // executando
+        proc_atual.main();
+        // adicinando na fila de pronto outro processo
+        if(!!fila_inicio.length)
+        {
+            fila_pronto.push(fila_inicio.splice(0,1));
+        }
+    }
+    else
+    {
+        let p = new Promise((res, rej)=>
+        {
+            proc_atual = fila_inicio.splice(0,1);
+            procs[proc_atual.id].estado = "PRONTO    ";            
+            fila_pronto.push(proc_atual);
+            is_ready_to_exec = true;
+            setTimeout(() =>
+            {
+                res();
+            }, 3000);
+        })
+        await p();
+        trocar_estados();
+    }
+};
+let load_process = ()=>
 {
     procs = cadastro.get_processos().map((p, i)=>
     {
         simulador[i] = new Simulador(eventEmitter, i);
-        simulador[i].main();
+        fila_inicio.push(simulador[i]);
         return {
             nome: p,
             estado: "INICIO    ",
             cont: 0,
             id: ("0"+i).slice(-2)
-        }
+        };
     });
+    // todo: iniciar troca de estados
+    trocar_estados();
+    do_backup();
 }
-var show_screen = ()=>
+let show_screen = ()=>
 {
     // verifica se o processo foi carregado
     if(!procs.length) load_process();
     // vendo se tem alguma mensagem de erro
     var m = (!!warning)?warning:"";
+    process.stdout.write('\033[2J');
     console.log(m+"\nPROCESSO         |ID|ESTADO    |CONTADOR");
     procs.forEach((proc)=>
     {
@@ -35,13 +76,13 @@ var show_screen = ()=>
             }
         }
         var nome = (proc.nome.length > 17)?proc.nome.substring(0,14)+"...":proc.nome+space;
-        var contador = ((proc.cont == 0)?10:proc.cont);
+        var contador = ((proc.cont == 0)?5:proc.cont);
         console.log(nome+"|"+proc.id+"|"+proc.estado+"|"+contador);
     });
     console.log("\n\n[K+ID] FINALIZAR PROCESSO\n[I+ID] INTERROMPER PROCESSO\n[E] SAIR");
 }
 // detecta keys do simulador
-var listen = (ch, key)=>
+let listen = (ch, key)=>
 {
     if(ch == "e")
     {
@@ -74,7 +115,7 @@ var listen = (ch, key)=>
         }
     }
 }
-var set_emitter = (emit) =>
+let set_emitter = (emit) =>
 {
     eventEmitter = emit;
     eventEmitter.on('simula', (opt) =>
@@ -89,6 +130,7 @@ var set_emitter = (emit) =>
         });
         show_screen();
     });
+    do_backup();
 }
 module.exports = {
     set_emitter: set_emitter,
