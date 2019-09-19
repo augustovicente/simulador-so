@@ -50,6 +50,8 @@ var main = (ch) =>
             submenu_atual = ch.toLowerCase();
             screen.clear_menu().then(() =>
             {
+                // verifica se o processo foi carregado
+                gerenciador.load_process();
                 gerenciador.show_screen();
             });
             break;

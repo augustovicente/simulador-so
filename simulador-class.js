@@ -14,20 +14,21 @@ class Simulador
     // função que verifica a saída
     check_exit(finalizar)
     {
-        if(!!finalizar) this.finish_count = 5;
-        this.finish_count++;
-        if (this.finish_count >= this.limit) this.eventEmitter.emit('simula', {id: this.id, cont: 'Terminado'});
+        if(!!finalizar) this.finish_count = 6, this.cont = 5;
+        else this.finish_count++;
+        if (this.finish_count >= this.limit) this.eventEmitter.emit('simula', {id: this.id, cont: this.cont});
     }
     // função de inicio
     init(e, interrupt) 
     {
-        if(e) this.eventEmitter.emit('simula', {id: this.id, cont: e});
+        if(e) this.eventEmitter.emit('passou', {id: this.id, cont: e});
         else
         {
             this.finish_count = -1;
             this.limit = 5;
         }
-        if(!interrupt) this.cont = 4;
+        // reiniciando o contador
+        if(!interrupt) this.cont = 5;
         this.check_exit();
     }
     // função de interrupção
@@ -93,6 +94,10 @@ class Simulador
                 await p();
             }
         }
+    }
+    get_id()
+    {
+        return this.id;
     }
 }
 module.exports = Simulador

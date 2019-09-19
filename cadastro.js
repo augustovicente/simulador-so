@@ -1,6 +1,6 @@
 var eventEmitter = null;
 var nome = "";
-var processos = [];
+var processos = ["word", "excel", "paint", "power point", "captura tela"];
 var set_emitter = (emit) =>
 {
     eventEmitter = emit;
