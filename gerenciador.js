@@ -129,7 +129,7 @@ let listen = (ch, key)=>
                     // remove da fila_inicio, finaliza, coloca como terminado e adiciona aos terminados
                     let _proc = fila_inicio.splice(b, 1)[0];
                     _proc.check_exit(true);
-                    procs[_proc.id].estado = "TERMINADO inicio";
+                    procs[_proc.id].estado = "TERMINADO ";
                     fila_terminado.push(_proc);
                     trocar_estados();
                 }
@@ -140,7 +140,7 @@ let listen = (ch, key)=>
                     // remove da fila_pronto, finaliza, coloca como terminado e adiciona aos terminados
                     let _proc = fila_pronto.splice(a, 1)[0];
                     _proc.check_exit(true);
-                    procs[_proc.id].estado = "TERMINADO pronto";
+                    procs[_proc.id].estado = "TERMINADO ";
                     fila_terminado.push(_proc);
                     trocar_estados();
                 }
@@ -150,7 +150,7 @@ let listen = (ch, key)=>
                     console.log("exec")
                     // finaliza, coloca como terminado, adiciona aos terminados, zera o atual e roda os estados
                     proc_atual.check_exit(true);
-                    procs[proc_atual.id].estado = "TERMINADO exec";
+                    procs[proc_atual.id].estado = "TERMINADO ";
                     fila_terminado.push(proc_atual);
                     proc_atual = null;
                     trocar_estados();
@@ -162,7 +162,7 @@ let listen = (ch, key)=>
                     proc_espera.check_exit(true);
                     // finaliza, coloca como terminado, adiciona aos terminados, zera o atual e roda os estados
                     proc_espera.check_exit(true);
-                    procs[proc_espera.id].estado = "TERMINADO esp";
+                    procs[proc_espera.id].estado = "TERMINADO ";
                     fila_terminado.push(proc_espera);
                     proc_espera = null;
                     trocar_estados();

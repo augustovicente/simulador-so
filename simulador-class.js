@@ -2,19 +2,20 @@ class Simulador
 {
     constructor(emit, _id)
     {
+        this.final = 5;
         this.screen = require('./screen');
         this.cadastro = require('./cadastro');
         this.id = 0;
         this.finish_count = 0;
-        this.cont = 4;
-        this.limit = 5;
+        this.cont = this.final-1;
+        this.limit = this.final;
         this.eventEmitter = emit;
         this.id = _id;
     }
     // função que verifica a saída
     check_exit(finalizar)
     {
-        if(!!finalizar) this.finish_count = 6, this.cont = 5;
+        if(!!finalizar) this.finish_count = this.final+1, this.cont = this.final;
         else this.finish_count++;
         if (this.finish_count >= this.limit) this.eventEmitter.emit('simula', {id: this.id, cont: this.cont});
     }
@@ -25,10 +26,10 @@ class Simulador
         else
         {
             this.finish_count = -1;
-            this.limit = 5;
+            this.limit = this.final;
         }
         // reiniciando o contador
-        if(!interrupt) this.cont = 5;
+        if(!interrupt) this.cont = this.final;
         this.check_exit();
     }
     // função de interrupção
@@ -80,7 +81,7 @@ class Simulador
                         {
                             try
                             {
-                                this.eventEmitter.emit('simula', {id: this.id, cont: 5});
+                                this.eventEmitter.emit('simula', {id: this.id, cont: this.final});
                                 throw ("Excessão!");
                             }
                             catch (e)
